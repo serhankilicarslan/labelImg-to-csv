@@ -1,0 +1,31 @@
+{
+  "name": "labelimg-to-csv",
+  "version": "0.0.1",
+  "description": "LabelImg Data To Automl Vision CSV",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/serhankilicarslan/labelImg-to-csv.git"
+  },
+  "keywords": [
+    "LabelImg",
+    "data",
+    "google",
+    "automl",
+    "vision",
+    "csv"
+  ],
+  "author": "Serhan Kılıçarslan <serhankilicarslan@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/serhankilicarslan/labelImg-to-csv/issues"
+  },
+  "homepage": "https://github.com/serhankilicarslan/labelImg-to-csv#readme",
+  "dependencies": {
+    "inquirer": "^7.0.0",
+    "xml2js": "^0.4.22"
+  }
+}
