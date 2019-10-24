@@ -11,7 +11,9 @@ $ node index.js
 ```
 
 ## Screenshot
-LabelImg
+
+LabelImg - [Open](https://github.com/tzutalin/labelImg)
+
 <p align="center">
   <img src="https://github.com/serhankilicarslan/labelImg-to-csv/raw/master/screenshot/capture-labelimg.png?raw=true" alt="LabelImg">
 </p>
