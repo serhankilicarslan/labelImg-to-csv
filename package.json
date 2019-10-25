@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/serhankilicarslan/labelImg-to-csv#readme",
   "dependencies": {
+    "console.table": "^0.10.0",
     "inquirer": "^7.0.0",
     "xml2js": "^0.4.22"
   }

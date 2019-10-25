@@ -2,9 +2,12 @@ const inquirer = require('inquirer'),
 fs = require('fs'),
 path = require('path'),
 xml2js = require('xml2js'),
+cTable = require('console.table'),
 parser = new xml2js.Parser()
 
 var gsPath, dataFolder;
+var rows = new Object();
+var table = new Array();
 
 var questions = [
 	{ type: 'input', name: 'projectId', message: "What's your projectId? (gs://projectId.appspot.com)", default: 'projectId'},
@@ -27,16 +30,30 @@ async function run() {
 				var xml = fs.readFileSync(path.join(__dirname, `./${dataFolder}/${files[i]}`));
 				if (xml.length > 0) {
 					var lines = await createCSVLines(xml)
-					// console.log(lines)
 					csv = csv + lines;
 				}
 			}
 		}
 		fs.writeFileSync(`./${dataFolder}/labelImg.csv`, csv);
+		writeTable()
 		console.log(`CSV file: "./${dataFolder}/labelImg.csv"`)
 	} catch (ex) {
 		console.log('ex', ex)
 	}
+}
+
+function writeTable() {
+	table = []
+	Object.keys(rows).forEach(function (key) {
+		table.push({
+			label: key,
+			count: rows[key].count,
+			train: rows[key].train,
+			validate: rows[key].validate,
+			test: rows[key].test
+		})
+	})
+	console.table(table);
 }
 
 function createCSVLines(xml) {
@@ -57,7 +74,7 @@ function addCsvLine(xml) {
 	if (xml.annotation.object != null)
 		for (var i = 0;  i < xml.annotation.object.length; i++) {
 			var obj = xml.annotation.object[i];
-			var name = obj.name[0]
+			var name = obj.name[0].toString()
 			var xmin = obj.bndbox[0].xmin[0]
 			var ymin = obj.bndbox[0].ymin[0]
 			var xmax = obj.bndbox[0].xmax[0]
@@ -68,7 +85,22 @@ function addCsvLine(xml) {
 			var x2 = (xmax / width).toFixed(2)
 			var y2 = (ymax / height).toFixed(2)
 
-			result += `\r\nTRAIN,${gsPath}/${folder}/${filename},${name},${x1},${y1},,,${x2},${y2},,`;
+			if (rows[name] == undefined) { rows[name] = { count:0, train: 0, validate:0, test:0 } }
+			var type; // TRAIN, VALIDATION, TEST
+			if (rows[name].count != 0 && rows[name].count % 8 == 0) {
+				rows[name].validate++
+				type = 'VALIDATION'
+			}
+			else if (rows[name].count != 0 && rows[name].count % 9 == 0) {
+				rows[name].test++
+				type = 'TEST'
+			}
+			else {
+				rows[name].train++
+				type = 'TRAIN'
+			}
+			rows[name].count++
+			result += `\r\n${type},${gsPath}/${folder}/${filename},${name},${x1},${y1},,,${x2},${y2},,`;
 		}
 	return result;
 }
